@@ -1,0 +1,13 @@
+server:
+  port: 7000
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: user-id
+          uri: lb://userServer
+          order: -1
+          predicates:
+            - Path=/userApi/**
+          filters:
+            - StripPrefix=0
