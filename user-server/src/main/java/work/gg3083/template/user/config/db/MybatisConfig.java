@@ -33,11 +33,11 @@ import javax.sql.DataSource;
  *
  ***/
 @Configuration
-@RefreshScope
+//@RefreshScope
 public class MybatisConfig {
 
 
-//    @Autowired
+    @Autowired
     private DataSource dataSource;
 
     @Autowired
@@ -52,42 +52,15 @@ public class MybatisConfig {
     @Autowired(required = false)
     private DatabaseIdProvider databaseIdProvider;
 
-
-    @Value("${spring.datasource.url:1}")
-    private String dbUrl;
-
-    @Value("${spring.datasource.username:2}")
-    private String username;
-
-    @Value("${spring.datasource.password:3}")
-    private String password;
-
-    @Value("${spring.datasource.driver-class-name:4}")
-    private String driverClassName;
-
-//    @Bean(name = "dataSource")
-    @Autowired
-    public MybatisConfig(DataSource dataSource) {
-        System.err.println("=================================================");
-        System.err.printf("dbUrl:%s, username:%s, password:%s, driverClassName:%s%n", dbUrl, username, password, driverClassName);
-        this.dataSource =  DataSourceBuilder
-                .create()
-                .url(this.dbUrl)
-                .username(username)
-                .password(password)
-                .driverClassName(driverClassName)
-                .build();
-    }
-
-//    /**
-//     *   mybatis-plus分页插件
-//     */
+    /**
+     *   mybatis-plus分页插件
+     */
 //    @Bean
-    public MybatisPlusInterceptor paginationInterceptor() {
-        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
-        return interceptor;
-    }
+//    public PaginationInterceptor paginationInterceptor() {
+//        PaginationInterceptor page = new PaginationInterceptor();
+//        page.setDialectType("mysql");
+//        return page;
+//    }
     /**
      * 这里全部使用mybatis-autoconfigure 已经自动加载的资源。不手动指定
      * 配置文件和mybatis-boot的配置文件同步
@@ -122,6 +95,4 @@ public class MybatisConfig {
         }
         return mybatisPlus;
     }
-
-
 }

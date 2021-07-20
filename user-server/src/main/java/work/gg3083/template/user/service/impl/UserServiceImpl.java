@@ -60,7 +60,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         userBO.setId(1);
         userBO.setLoginName(loginName);
         userBO.setUserName("张三1");
-        userBO.setPassWord("pass");
+        userBO.setPassWord("123456");
         userBO.setRoleList(Arrays.asList("ROLE_ADMIN","ROLE_USER"));
         userBO.setPermList(Arrays.asList("system:add","system:update"));
         return userBO;

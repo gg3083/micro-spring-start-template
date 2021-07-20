@@ -10,7 +10,14 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import work.gg3083.template.oauth2.component.MyJwtTokenEnhancer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 @EnableAuthorizationServer
@@ -26,7 +33,24 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private TokenStore redisTokenStore;
+    private TokenStore jwtTokenStore;
+
+    @Autowired
+    private JwtAccessTokenConverter jwtAccessTokenConverter;
+
+    @Autowired
+    private MyJwtTokenEnhancer jwtTokenEnhancer;
+
+    public TokenEnhancerChain initTokenEnhancerChain(){
+        TokenEnhancerChain tokenEnhancerChain=new TokenEnhancerChain();
+
+        List<TokenEnhancer> list=new ArrayList<>();
+        list.add(jwtTokenEnhancer);          //添加自定义tokenEnhancer
+        list.add(jwtAccessTokenConverter);   //将token转换为jwt
+        tokenEnhancerChain.setTokenEnhancers(list);
+
+        return tokenEnhancerChain;
+    }
 
     @Override
     public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
@@ -35,7 +59,9 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
          */
         endpoints.authenticationManager(authenticationManager)
                 .userDetailsService(kiteUserDetailsService)
-                .tokenStore(redisTokenStore);
+                .tokenStore(jwtTokenStore)
+                .tokenEnhancer(initTokenEnhancerChain())
+                .accessTokenConverter(jwtAccessTokenConverter);
 
     }
 

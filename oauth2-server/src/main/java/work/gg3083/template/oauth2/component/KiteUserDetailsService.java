@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import work.gg3083.template.oauth2.fegin.IUserServiceFegin;
 import work.gg3083.template.oauth2.model.bo.UserBO;
+import work.gg3083.template.oauth2.model.vo.UserVO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ public class KiteUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("usernameis:" + username);
+        log.info("当前想登录用户为: {}", username);
         if (Strings.isEmpty(username)){
             throw new UsernameNotFoundException("用户不能为空");
         }
@@ -41,8 +42,8 @@ public class KiteUserDetailsService implements UserDetailsService {
         userBO.getRoleList().forEach(role->{
             authorities.add(new SimpleGrantedAuthority(role));
         });
-        // 线上环境应该通过用户名查询数据库获取加密后的密码
         String password = passwordEncoder.encode(userBO.getPassWord());
-        return new org.springframework.security.core.userdetails.User(username,password, authorities);
+        userBO.setPassWord(password);
+        return new UserVO(userBO, authorities);
     }
 }
