@@ -1,6 +1,8 @@
 spring:
   application:
     name: userServer
+  main:
+    allow-bean-definition-overriding: true
   cloud:
     nacos:
       config:
@@ -13,4 +15,5 @@ spring:
 server:
   servlet:
     context-path: /userApi
+  port: 7002
 
